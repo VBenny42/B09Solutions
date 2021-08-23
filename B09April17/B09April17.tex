@@ -1,0 +1,601 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+
+\usepackage{amstext}
+
+\usepackage{amsthm}
+\usepackage{color, fullpage, hyperref}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{commath}
+
+\usepackage[table]{xcolor}
+\usepackage{makecell}
+
+%\pagecolor[rgb]{0,0,0} %black    % to change page to night mode
+%\color[rgb]{0.5,0.5,0.5} %grey
+
+\usepackage{graphicx}
+\usepackage{tikz, pgfplots, hf-tikz}
+\pgfplotsset{compat=1.17}
+\allowdisplaybreaks
+\renewcommand\qedsymbol{$\blacksquare$}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
+\tcbuselibrary{fitting}
+\usepackage{empheq}
+
+\usepackage[margin=0.5in]{geometry}
+\usepackage{fancyvrb}
+
+\usepackage{enumerate}
+\usepackage{soul}
+%\usepackage{alltt}
+
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\definecolor{correct}{RGB}{37,150,190}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+\tcbset{
+	colback=blue!25!purple!10!,
+	colframe=blue!40}
+%\sethlcolor{correct}
+
+%\renewcommand{\theenumii}{\Alph{enumii}}
+
+\usepackage{xifthen}
+\newcommand{\mycheckbox}[1]{%
+	\hspace{0.47cm}\ifthenelse{\equal{#1}{Y}}% Y means work as intended, otherwise error
+	{\begin{minipage}[t]{0.23\textwidth}
+			\item[$\boxtimes$] Works as intended
+		\end{minipage}
+		\begin{minipage}[t]{0.5\textwidth}
+			\item[$\square$] Error
+	\end{minipage}}% #1 = #2 -> [#1]
+	{\begin{minipage}[t]{0.23\textwidth}
+			\item[$\square$] Works as intended
+		\end{minipage}
+		\begin{minipage}[t]{0.1\textwidth}
+			\item[$\boxtimes$] Error
+	\end{minipage}}% [#1,#2]
+}
+
+\newcommand{\trueorfalse}[1]{%
+	\hspace{0.47cm}\ifthenelse{\equal{#1}{T}}% Y means work as intended, otherwise error
+	{\begin{minipage}[t]{0.1\textwidth}
+			\item[$\boxtimes$] True
+		\end{minipage}
+		\begin{minipage}[t]{0.1\textwidth}
+			\item[$\square$] False
+	\end{minipage}}% #1 = #2 -> [#1]
+	{\begin{minipage}[t]{0.1\textwidth}
+			\item[$\square$] True
+		\end{minipage}
+		\begin{minipage}[t]{0.1\textwidth}
+			\item[$\boxtimes$] False
+	\end{minipage}}% [#1,#2]
+}
+\fvset{tabsize=2}
+
+\newcommand{\myspace}{\vspace{0.4cm}}
+
+
+\begin{document}
+\begin{enumerate}
+	\item \begin{enumerate}
+		\item A parent process and a child share the same address space.
+			\begin{tcolorbox}\trueorfalse{F}\end{tcolorbox}
+		\item A process can call wait to wait for a process that it is not related to.
+			\begin{tcolorbox}\trueorfalse{T}\end{tcolorbox}
+		\item Signals can be used for communication between processes on different machines.
+			\begin{tcolorbox}\trueorfalse{T} With scokets maybe?\end{tcolorbox}
+		\item Internet routers guarantee reliable delivery of network packets.
+			\begin{tcolorbox}\trueorfalse{F} TCP ensures reliability\end{tcolorbox}
+		\item TCP is more efficient, but less reliable than UDP.
+			\begin{tcolorbox}\trueorfalse{F} UDP is more efficient\end{tcolorbox}
+		\item A string’s length (as indicated by strlen) and its size (as indicated by sizeof) are always equal.
+			\begin{tcolorbox}\trueorfalse{F}\end{tcolorbox}
+		\item Pipes can be used for communication between processes on different machines.
+			\begin{tcolorbox}\trueorfalse{T} With named pipes\end{tcolorbox}
+		\item Sockets can be used for communication between processes running on the same machine.
+		\begin{tcolorbox}\trueorfalse{T}\end{tcolorbox}
+	\end{enumerate}
+
+	\newpage
+	\item \begin{enumerate}
+		\item Considering the following piece of code, fill the table below with the values of the array elements after the code is done executing. Be careful with the difference between pointers and values, and pointer arithmetic.
+			\begin{Verbatim}
+int a[4] = {0, 1, 2, 3};
+int b = 1;
+int *p = a;
+p = p + b;
+b++;
+*p += b;
+p = p + b;
+*p += 2;
+p--;
+*p *= 4;
+p = p - b;
+*p = p - a;
+			\end{Verbatim}
+		\begin{tcolorbox}\begin{tabular}[l]{| c | c | c | c |}
+			\hline
+			a[0] & a[1] & a[2] & a[3]\\
+			\hline
+			0 & 3 & 8 & 5\\
+			\hline
+		\end{tabular}\end{tcolorbox}
+
+	\item What is the output of the following program?
+	\begin{Verbatim}
+#include <stdio.h>
+
+int func(int a, int *b, int *c) {
+	a += 5;
+	*b += a;
+	c = b;
+	return a;
+}
+
+int main() {
+	int x = 5, y = 8, z = 3, t = 0;
+	t = func(x, &y, &z);
+
+	printf("x:%d    y:%d    z:%d	t:%d\n", x, y, z, t);
+	return 0;
+}
+	\end{Verbatim}
+	\begin{tcolorbox}\Verb|x:5	y:18	z:3	t:10|\end{tcolorbox}
+
+	\newpage
+	\item There are several errors in the following program. Use the appropriate letter to label the lines of code where the corresponding error occurs.
+		\begin{itemize}
+			\item[\textbf{P -}]  dereferencing a pointer without having allocated memory for it.
+			\item[\textbf{D -}] deallocating memory that has already been deallocated.
+			\item[\textbf{H -}] deallocating memory that is not located on the heap.
+			\item[\textbf{M -}] memory leak.
+		\end{itemize}
+		\begin{Verbatim}
+int a = 0, b = 1, c = 2;
+int *p, *q, *r;
+
+p = malloc(sizeof(int));
+*p = b;
+q = &c;
+p = &a;     (M, since p now has address of a, malloc'd memory has no pointer to it)
+*q = b;
+q = malloc(sizeof(10));
+*r = a + b + c;		(P)
+free(p);	(H, p points to a)
+r = q;
+p = malloc(sizeof(int));
+*p = *r;
+free(q);
+free(r);	(D, r and q point to same thing)
+free(p);
+		\end{Verbatim}
+
+	\vspace{1cm}
+	\item What does the following piece of code print?
+	\fvset{tabsize=2}
+	\begin{Verbatim}
+struct Point {
+	int x;
+	int y;
+};
+
+struct Point p1, p2;
+struct Point *q1, *q2;
+
+p1.x = 5;  p1.y = 10;
+p2.x = 1;  p2.y = 10;
+
+q1 = &p2;
+q2 = &p1;
+q1->x += 2;    q1->y += 7;
+q2->x += 4;    q2->y += 3;
+
+printf("P1(X,Y) = (%d, %d)\n", p1.x, p1.y);
+printf("P2(X,Y) = (%d, %d)\n", p2.x, p2.y);
+	\end{Verbatim}
+	\begin{tcolorbox}\begin{Verbatim}
+P1(X,Y) = (9, 13)
+P2(X,Y) = (3, 17)
+	\end{Verbatim}
+\end{tcolorbox}
+	\end{enumerate}
+
+	\newpage
+	\item Each example below contains an independent code fragment. In each case, there are variables \textit{x} and \textit{y} that are missing declaration statements. In the boxes to the right of the code, write those declaration statements so that the code fragment would compile and run without warnings or errors. If there is no declaration that could lead to a compilation without warnings or errors, write “ERROR”. The first is done for you as an example.\\
+		\begin{tabular}[c]{| l | l | l |}
+			\hline
+			\textbf{Code Fragment} & \textbf{Declaration for \textit{x}} & \textbf{Declaration for \textit{y}}\\
+			\hline
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+x = 10;
+y = ’A’;
+
+			\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+int x;
+
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+char y;
+
+
+				\end{Verbatim}
+			\end{minipage}\\
+			\hline
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+double length = 25;
+x = &length;
+y = &x
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+double *x;
+
+
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+double **y;
+
+
+
+				\end{Verbatim}
+			\end{minipage}\\
+			\hline
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+char *id[6];
+x = id[3];
+// some hidden code
+id[3] = "c3new";
+y = *x[3];
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+char *x;
+
+
+
+
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+char *y;
+
+
+
+
+
+				\end{Verbatim}
+			\end{minipage}\\
+			\hline
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+char *name = "John Tory";
+x = &name;
+y = *(name + 3);
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+char **x;
+
+
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+char y;
+
+
+
+				\end{Verbatim}
+			\end{minipage}\\
+			\hline
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+struct node {
+	int value;
+	struct node *next;
+};
+typedef struct node List;
+List *head;
+// some hidden code
+x = head->next;
+y.value = 14;
+y.next = x;
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+struct node *x;
+
+
+
+
+
+
+
+
+
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+struct node y;
+
+
+
+
+
+
+
+
+
+
+				\end{Verbatim}
+			\end{minipage}\\
+			\hline
+			\begin{minipage}{0.3\textwidth}
+				\begin{Verbatim}
+
+char fun(char *str, int n) {
+	return str[n];
+}
+y = fun("hello", 1);
+x = &y;
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}[t]{0.3\textwidth}
+				\begin{Verbatim}
+
+ERROR: fun has wrong
+return type
+
+				\end{Verbatim}
+			\end{minipage} &
+			\begin{minipage}[t]{0.3\textwidth}
+				\begin{Verbatim}
+
+ERROR: fun has wrong
+return type
+
+				\end{Verbatim}
+			\end{minipage}\\
+			\hline
+		\end{tabular}
+
+	\newpage
+	\item Some of the code fragments below have a problem. For each fragment indicate whether the code works as intended or there is an error (logical error, compile-time error/warning, or runtime error). Assume all programs are compiled using the \textit{C}99 standard. For this question, we will assume programs which do not terminate are errors as well. If there is an error in a fragment, explain \textbf{briefly} what is wrong in the box. For parts where there is an error you will only receive marks if you can correctly explain what is wrong. We have intentionally omitted the error checking of the system calls to simplify the examples. Do \textbf{not} report this as an error.\\
+	Some of the parts use the following struct definition:
+	\begin{Verbatim}
+struct student {
+	int age;
+	char *name;
+};
+	\end{Verbatim}
+
+
+		\begin{Verbatim}
+char *s = "Hello";
+strcat(s, ", World!");
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{N}\\
+		\Verb|*s| is declared as a string literal and therefore cannot be modified.\end{tcolorbox}
+		\myspace
+		\begin{Verbatim}
+int main(int argc, char **argv) {
+	char ch;
+	char *p = &ch;
+	ch = argv[argc-1][0];
+	printf("%c\n", p[0]);
+	return 0;
+}
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{Y}\\
+		Prints the first char of \Verb|argv[0]|, i.e. first char of the program name.\end{tcolorbox}
+		\myspace
+		\begin{Verbatim}
+struct student hannah;
+strcpy(hannah.name, "Hannah");
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{N}\\
+		No memory allocated for \Verb|hannah.name|.\end{tcolorbox}
+		\myspace
+		\begin{Verbatim}
+struct student hannah = NULL;
+// ... missing code ...
+if (hannah != NULL) {
+	hannah.age = 10;
+}
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{N}\\
+		\Verb|NULL| can only be assigned to pointers, so type mixup.\end{tcolorbox}
+
+		\newpage
+		\begin{Verbatim}
+// Increase the age of a student by amt.
+void increase_age(struct student s, int amt) {
+	s.age += amt;
+}
+
+int main() {
+	struct student rob;
+	rob.age = 10;
+	increase_age(rob, 5);
+	printf("%d should be 15\n", rob.age);
+	return 0;
+}
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{N}\\
+		\Verb|age| changed in \Verb|increase_age| locally, but change will not be reflected in \Verb|main|. \Verb|increase_age| should use pointers instead.\end{tcolorbox}
+		\myspace
+		\begin{Verbatim}
+// Compute the sum of an array of integers
+int compute_sum(int numbers[]) {
+	int sum = 0;
+	for (int i = 0; i < sizeof(numbers); i++) {
+		sum += numbers[i];
+	}
+	return sum;
+}
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{N}\\
+		\Verb|sizeof(numbers)| in \Verb|compute_sum| will return the size of an \Verb|int *|, which will not loop over the array successfully. An additional parameter should be added to \Verb|compute_sum|, that explicitly has the number of elements in \Verb|numbers|.\end{tcolorbox}
+		\vspace{0.4cm}
+		\begin{Verbatim}
+int fd[2];
+int result = fork();
+pipe(fd);
+if (result == 0) {
+	close(fd[0]);
+	write(fd[1], "cscb09", 7);
+}
+else {
+	close(fd[1]);
+	char buf[7];
+	read(fd[0], buf, 7);
+	printf("%s\n", buf);
+}
+exit(0);
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{N}\\
+		\Verb|pipe(fd)| should be above the \Verb|fork()| line, so that both parent and child inherit the same fds.\end{tcolorbox}
+
+		\newpage
+		\begin{Verbatim}
+// Read all bytes from the file descriptors in ‘fds’ as characters,
+// and print them. ‘num_fds’ is the number of file descriptors, and
+// ‘max_fd’ is the value of the largest one.
+void read_ints(int *fds, int num_fds, int max_fd) {
+	char data;
+	fd_set set;
+	FD_ZERO(&set);
+	for (int i = 0; i < num_fds; i++) {
+		FD_SET(fds[i], &set);
+	}
+	while (select(max_fd + 1, &set, NULL, NULL, NULL) > 0) {
+		for (int i = 0; i < num_fds; i++) {
+			if (FD_ISSET(fds[i], &set)) {
+				if (read(sum, &data, 1) > 0) {
+					printf("%c\n", data);
+				}
+			}
+		}
+	}
+}
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{Y}\end{tcolorbox}
+		\myspace
+		\begin{Verbatim}
+struct node {
+	int item;
+	struct node *next;
+};
+
+// Compute the sum of the items in a linked list with the given head,
+// but do not modify the list.
+int sum(struct node *head) {
+	int s = 0;
+	while (head != NULL) {
+		s += head->item;
+		*head = *(head->next);
+	}
+	return s;
+}
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{N}\\
+		\Verb|*head = *(head->next)| is wrong. This makes the memory that \Verb|head| points to have the same contents that \Verb|head->next| points to. Also, this modifies the list by modifying \Verb|head|, which means the actual \Verb|head| cannot be accessed again. A \Verb|temp| pointer should be used to traverse list instead.\end{tcolorbox}
+		\newpage
+		\begin{Verbatim}
+// Remove the dots from word
+char *word = "Ex.ampl.e";
+char *result = malloc(strlen(word) + 1); // upper-limit if word has no dots
+for (int i = 0; i < strlen(word); i++) {
+	if (word[i] != ’.’) {
+		strncat(result, word[i], 1);
+	}
+}
+		\end{Verbatim}
+		\begin{tcolorbox}\mycheckbox{N}\\
+		\Verb|strncat| uses \Verb|char| pointers as arguments so \Verb|strncat(result, &word[i], 1);| should be used instead.\end{tcolorbox}
+
+	\newpage
+	\item Assume a linked list structure, which contains some information about a student, as follows:
+	\begin{Verbatim}
+typedef struct student {
+	int student_number;
+	char *last_name;
+	struct student *next;
+} Student;
+	\end{Verbatim}
+
+		Write a function that traverses a given student list and inserts a new student in alphabetical order (function prototype given below). If the new student has the same last name as another student from the list, insert in ascending order of the student number.\\
+		\textit{Note:} The new student name passed to the function may be deallocated once the function exits, so make sure to create a new copy of the student name when inserting.
+			\lstinputlisting[language=c]{q5.c}
+\end{enumerate}
+\end{document}
