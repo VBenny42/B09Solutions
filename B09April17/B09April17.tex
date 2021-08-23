@@ -597,5 +597,64 @@ typedef struct student {
 		Write a function that traverses a given student list and inserts a new student in alphabetical order (function prototype given below). If the new student has the same last name as another student from the list, insert in ascending order of the student number.\\
 		\textit{Note:} The new student name passed to the function may be deallocated once the function exits, so make sure to create a new copy of the student name when inserting.
 			\lstinputlisting[language=c]{q5.c}
+
+	\newpage
+	\item Consider the following program that runs to completion without errors:
+		\begin{Verbatim}
+int main() {
+	int var = 1;
+	int status;
+
+	int r = fork();
+	if(r == 0) {
+		var++;
+		r = fork();
+		if(r == 0) { // process X
+			var++;
+			exit(var);
+		} else { // process Y
+			if(wait(&status) != -1) {
+				if(WIFEXITED(status)) {
+					printf("A %d ", WEXITSTATUS(status));
+				}
+			}
+			var += 2;
+		}
+	} else { // process Z
+		printf("W %d ", var);
+		if(wait(&status) != -1) {
+			if(WIFEXITED(status)) {
+				printf("B %d ", WEXITSTATUS(status));
+			}
+		}
+	}
+	printf("C %d ", var);
+	return 0;
+}
+		\end{Verbatim}
+		\begin{enumerate}
+			\item Write all the possible output orders for this program.
+				\begin{tcolorbox}\Verb|A 3 C 4 W 1 B 0 C 1|\\
+					\Verb|C| gets printed twice because both parent and child process of outer fork prints. Process \Verb|Z| has \Verb|var| as \Verb|1| from when it is forked. And the outer child process has exit code \Verb|0| because it does not specify an exit code. ``\Verb|W 1|" can be printed either first, second or third, since it is before the \Verb|wait| call.
+				\end{tcolorbox}
+			\myspace
+			\item If all processes run to completion, can process \textit{X} or process \textit{Y} become an orphan? If yes, explain the sequence of events that would cause the process to become an orphan. If no, then explain what modification would need be made to the code so that a process might become an orphan. Clearly identify which process is the orphan.
+				\begin{tcolorbox}No, because there are two \Verb|wait| calls and two \Verb|fork| calls, so parent always waits for child. Process \Verb|Y| could become an orphan if process \Verb|Z| had no \Verb|wait| call, and \Verb|Y| does not have an \Verb|exit| line.\end{tcolorbox}
+
+			\newpage
+			\item
+			If all processes run to completion, can process \textit{X} or process \textit{Y} become a zombie? If yes, explain the sequence of events that would cause the process to become a zombie. If no, then explain what modification would need be made to the code so that a process might become a zombie. Clearly identify which process is the zombie.
+				\begin{tcolorbox}No, because there are two \Verb|wait| calls and two \Verb|fork| calls, so parent always waits for child. Process \Verb|X| could become a zombie if process \Verb|Y| did not have a \Verb|wait| call and \Verb|X| has exited.\end{tcolorbox}
+		\end{enumerate}
+
+	\newpage
+	\item Implement a “parrot” server, which receives messages from clients and repeats each message back to the client who originally sent it. The server communicates with clients using \textit{reliable} connections and uses the \textit{I/O multiplexing} model.\\
+	Once a client connection is established, the server adds the new communication channel (socket) to a local client array to keep track of it (the code for initializing this is provided). Any new messages received from such a client will be repeated back to the client over the corresponding communication channel. The server does \textit{not} timeout while waiting for client connections.
+
+	\textit{Notes:} \begin{itemize}
+			\item[--]  Use the API sheet. Syntax does not have to be perfect, but \textbf{do not write pseudocode}.
+			\item[--] Explain in comments all design decisions (size of queue for pending connections, etc.).
+			\item[--] Some code is already provided to guide you: extracting the port, initializing the array that will keep track of the sockets for clients, initializing file descriptor sets, etc. Have a look over the next page before starting.
+		\end{itemize}
 \end{enumerate}
 \end{document}
