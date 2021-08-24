@@ -2,36 +2,34 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
-int turn = 0;
-void handler(int code) {
-    if(turn == 0) {
-        fprintf(stderr, "First\n");
-        turn = 1;
-        /* D */
-        sleep(15);
+int main(void)
+{
+	int i = 0;
+	printf("Broccoli\n");
+	int r = fork();
+	printf("Cucumbers\n");
+	if (r == 0) {
+		printf("Kale\n");
+		int k = fork();
+		if (k >= 0) {
+			printf("Peppers\n");
+		}
+	} else if (r > 0) {
+		wait(NULL);
+		printf("Cabbage\n");
+		while(fork() == 0) {
+			printf("Carrots\n");
+			i++;
+			if(i == 3) break;
+		}
+		i = 0;
+		while(fork() > 0) {
+			printf("Spinach\n");
+			i++;
+			if(i == 2) break;
+		}
+	}
+	return 0;
 }
-else {
-        fprintf(stderr, "Second\n");
-        kill(getpid(), SIGQUIT);
-    }
-    fprintf(stderr, "Here\n");
-}
-int main(void) {
-    char buf[20];
-    struct sigaction sa;
-    sa.sa_handler = handler;
-    sa.sa_flags = 0;
-    sigemptyset(&sa.sa_mask);
-    sigaddset(&sa.sa_mask, SIGINT);
-    /* A */
-    printf("a\n");
-    sigaction(SIGTERM, &sa, NULL);
-    /* B */
-    printf("b\n");
-    sleep(100);
-    fprintf(stderr, "Done\n");
-    /* C */
-    printf("c\n");
-    sleep(100);
-return 0; }
