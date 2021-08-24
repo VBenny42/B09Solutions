@@ -23,7 +23,7 @@ void do_left(int fd_read, int fd_write)
                 exit(0);
             }
             // No error checking because assuming write is successful
-            write(STDOUT_FILENO, buf, BUF_SIZE);
+            write(STDOUT_FILENO, buf, read_val);
         }
         else if (FD_ISSET(STDIN_FILENO, &read_fds)) {
             // EOF or Error
